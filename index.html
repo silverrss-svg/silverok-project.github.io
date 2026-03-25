@@ -1,0 +1,1044 @@
+Вот обновленная версия сайта с добавленной светлой/темной темой и улучшенным дизайном:
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Финансовый навигатор PRO | Светлая/Темная тема</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.4;
+            min-height: 100vh;
+        }
+        
+        /* ========== СВЕТЛАЯ ТЕМА (по умолчанию) ========== */
+        body.light-theme {
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f8 100%);
+            color: #1a2c3e;
+        }
+        
+        body.light-theme .top-bar,
+        body.light-theme .card,
+        body.light-theme .stats-section,
+        body.light-theme .tips-section,
+        body.light-theme .modal-card {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        body.light-theme .result {
+            background: #e8f0fe;
+            color: #1e4a76;
+        }
+        
+        body.light-theme .input-group input,
+        body.light-theme .input-group select {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #1a2c3e;
+        }
+        
+        body.light-theme .transaction-item {
+            border-bottom-color: #e2e8f0;
+        }
+        
+        body.light-theme .account-item {
+            background: #f8fafc;
+        }
+        
+        /* ========== ТЕМНАЯ ТЕМА ========== */
+        body.dark-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+        }
+        
+        body.dark-theme .top-bar,
+        body.dark-theme .card,
+        body.dark-theme .stats-section,
+        body.dark-theme .tips-section,
+        body.dark-theme .modal-card {
+            background: rgba(30, 41, 59, 0.95);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        body.dark-theme .result {
+            background: #0f172a;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+        
+        body.dark-theme .input-group input,
+        body.dark-theme .input-group select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f1f5f9;
+        }
+        
+        body.dark-theme .input-group input:focus,
+        body.dark-theme .input-group select:focus {
+            border-color: #1b7e6b;
+            box-shadow: 0 0 0 3px rgba(27, 126, 107, 0.3);
+        }
+        
+        body.dark-theme .transaction-item {
+            border-bottom-color: #334155;
+        }
+        
+        body.dark-theme .account-item {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        body.dark-theme .card-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-theme .stats-header h3 {
+            color: #e2e8f0;
+        }
+        
+        body.dark-theme .delete-trans {
+            color: #f97316;
+        }
+        
+        /* Общие стили */
+        .app-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Анимация появления */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card, .stats-section, .tips-section {
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        /* Шапка */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            margin-bottom: 1.8rem;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-area h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0b3b5f, #1b7e6b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        .logo-area p {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+        
+        .theme-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .theme-toggle-btn {
+            background: rgba(27, 126, 107, 0.15);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1b7e6b;
+        }
+        
+        body.dark-theme .theme-toggle-btn {
+            background: rgba(27, 126, 107, 0.3);
+            color: #4c9f8a;
+        }
+        
+        .theme-toggle-btn:hover {
+            transform: scale(0.96);
+            background: rgba(27, 126, 107, 0.25);
+        }
+        
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 0.4rem 1rem 0.4rem 1.2rem;
+            border-radius: 50px;
+        }
+        
+        body.dark-theme .user-area {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .user-greeting {
+            font-weight: 600;
+            color: #1b7e6b;
+        }
+        
+        .logout-btn, .login-reg-btn {
+            background: #eef2f5;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 500;
+            width: auto;
+            margin: 0;
+            transition: all 0.2s;
+        }
+        
+        body.dark-theme .logout-btn,
+        body.dark-theme .login-reg-btn {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        
+        .logout-btn:hover, .login-reg-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Сетка калькуляторов */
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.8rem;
+        }
+        
+        .card {
+            border-radius: 28px;
+            padding: 1.3rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid rgba(27, 126, 107, 0.2);
+            padding-bottom: 0.6rem;
+        }
+        
+        .card-header i {
+            font-size: 1.6rem;
+            color: #1b7e6b;
+        }
+        
+        .card-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .input-group {
+            margin-bottom: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .input-group label {
+            font-weight: 500;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .input-group input, .input-group select {
+            padding: 0.65rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            border-color: #1b7e6b;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1b7e6b, #0f5e4f);
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 0.3rem;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(27, 126, 107, 0.3);
+        }
+        
+        .result {
+            margin-top: 1rem;
+            padding: 0.7rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Блок статистики */
+        .stats-section {
+            border-radius: 28px;
+            padding: 1.3rem;
+            margin-bottom: 1.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            gap: 12px;
+        }
+        
+        .stats-header h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .income-expense-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .income-expense-form .input-group {
+            margin-bottom: 0;
+            width: 140px;
+        }
+        
+        .income-expense-form button {
+            width: auto;
+            padding: 0.6rem 1rem;
+            margin-top: 0;
+        }
+        
+        .chart-container {
+            max-width: 100%;
+            height: 280px;
+            margin-top: 1rem;
+        }
+        
+        .transactions-list {
+            margin-top: 1rem;
+            max-height: 180px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid;
+        }
+        
+        .delete-trans {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .delete-trans:hover {
+            opacity: 0.7;
+        }
+        
+        /* Модалка */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-card {
+            max-width: 400px;
+            width: 90%;
+            border-radius: 32px;
+            padding: 1.8rem;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .close-modal:hover {
+            opacity: 0.7;
+        }
+        
+        /* Советы */
+        .tips-section {
+            border-radius: 28px;
+            padding: 1.3rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .random-btn {
+            background: #f5a65b;
+            width: auto;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.8rem;
+        }
+        
+        .random-btn:hover {
+            background: #e5943a;
+            transform: scale(0.98);
+        }
+        
+        .tip-card {
+            padding: 0.9rem 1.2rem;
+            border-radius: 24px;
+            border-left: 5px solid #f5a65b;
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            opacity: 0.6;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .app-wrapper {
+                padding: 0.7rem;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .income-expense-form .input-group {
+                width: 100%;
+            }
+            
+            .income-expense-form {
+                width: 100%;
+            }
+            
+            .stats-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        
+        /* Стили для скроллбара */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #1b7e6b;
+            border-radius: 10px;
+        }
+        
+        .text-success {
+            color: #1b7e6b;
+        }
+        
+        .text-danger {
+            color: #e07c4c;
+        }
+        
+        /* Дополнительные улучшения */
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="light-theme">
+<div class="app-wrapper">
+    <div class="top-bar">
+        <div class="logo-area">
+            <h1><i class="fas fa-chart-pie"></i> ФинансНавигатор PRO</h1>
+            <p>Калькуляторы + статистика + ипотека + рассрочка</p>
+        </div>
+        <div class="theme-controls">
+            <button id="themeToggleBtn" class="theme-toggle-btn">
+                <i class="fas fa-moon"></i> Тёмная тема
+            </button>
+            <div class="user-area" id="userArea">
+                <div class="user-greeting" id="userGreeting">Гость</div>
+                <button id="authActionBtn" class="login-reg-btn"><i class="fas fa-user-plus"></i> Вход</button>
+                <button id="logoutBtn" class="logout-btn hidden"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Калькуляторы -->
+    <div class="calculators-grid">
+        <!-- Бюджет -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-chart-line"></i><h2>Баланс бюджета</h2></div>
+            <div class="input-group"><label>💰 Доход (₽)</label><input type="number" id="income" value="85000"></div>
+            <div class="input-group"><label>🛒 Расходы (₽)</label><input type="number" id="expenses" value="55000"></div>
+            <button id="calcBudgetBtn">Рассчитать остаток</button>
+            <div class="result" id="budgetResult">💰 Остаток: 30 000 ₽</div>
+        </div>
+        
+        <!-- Кредитный калькулятор -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-hand-holding-usd"></i><h2>Кредитный платёж</h2></div>
+            <div class="input-group"><label>Сумма (₽)</label><input type="number" id="loanAmount" value="500000"></div>
+            <div class="input-group"><label>Ставка (%)</label><input type="number" id="loanRate" value="12"></div>
+            <div class="input-group"><label>Срок (мес)</label><input type="number" id="loanTerm" value="24"></div>
+            <button id="calcLoanBtn">Рассчитать</button>
+            <div class="result" id="loanResult">📆 Платёж: 23 537 ₽</div>
+        </div>
+        
+        <!-- Ипотека -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-home"></i><h2>Ипотечный калькулятор</h2></div>
+            <div class="input-group"><label>🏠 Стоимость недвижимости (₽)</label><input type="number" id="mortgagePrice" value="5000000"></div>
+            <div class="input-group"><label>💰 Первоначальный взнос (₽)</label><input type="number" id="mortgageDown" value="1000000"></div>
+            <div class="input-group"><label>📉 Годовая ставка (%)</label><input type="number" id="mortgageRate" value="10.5" step="0.1"></div>
+            <div class="input-group"><label>📅 Срок (лет)</label><input type="number" id="mortgageYears" value="20"></div>
+            <button id="calcMortgageBtn">Рассчитать ипотеку</button>
+            <div class="result" id="mortgageResult">🏡 Ежемесячный платёж: -- ₽</div>
+        </div>
+        
+        <!-- Рассрочка -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-calendar-alt"></i><h2>Калькулятор рассрочки</h2></div>
+            <div class="input-group"><label>🛍️ Сумма покупки (₽)</label><input type="number" id="installAmount" value="120000"></div>
+            <div class="input-group"><label>📆 Срок (месяцев)</label><input type="number" id="installMonths" value="6"></div>
+            <div class="input-group"><label>💸 Годовая ставка (%)</label><input type="number" id="installRate" value="0" step="0.1"></div>
+            <button id="calcInstallBtn">Рассчитать платёж</button>
+            <div class="result" id="installResult">📦 Ежемесячно: 20 000 ₽</div>
+        </div>
+        
+        <!-- Инвестиции -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-chart-simple"></i><h2>Инвестиции</h2></div>
+            <div class="input-group"><label>Начальный капитал (₽)</label><input type="number" id="investPrincipal" value="100000"></div>
+            <div class="input-group"><label>Ежемес. пополнение (₽)</label><input type="number" id="monthlyAdd" value="5000"></div>
+            <div class="input-group"><label>Доходность (% год)</label><input type="number" id="yearReturn" value="10" step="0.1"></div>
+            <div class="input-group"><label>Лет</label><input type="number" id="yearsInvest" value="5"></div>
+            <button id="calcInvestBtn">Рассчитать</button>
+            <div class="result" id="investResult">📈 Итог: ~480 000 ₽</div>
+        </div>
+        
+        <!-- Копилка цели -->
+        <div class="card">
+            <div class="card-header"><i class="fas fa-piggy-bank"></i><h2>Копилка цели</h2></div>
+            <div class="input-group"><label>Цель (₽)</label><input type="number" id="goalAmount" value="300000"></div>
+            <div class="input-group"><label>Срок (мес)</label><input type="number" id="goalMonths" value="12"></div>
+            <div class="input-group"><label>Уже есть (₽)</label><input type="number" id="currentSavings" value="50000"></div>
+            <button id="calcGoalBtn">Сколько в месяц</button>
+            <div class="result" id="goalResult">🎯 Нужно: 20 833 ₽/мес</div>
+        </div>
+    </div>
+
+    <!-- Блок статистики -->
+    <div class="stats-section">
+        <div class="stats-header">
+            <h3><i class="fas fa-chart-bar"></i> Статистика доходов и расходов</h3>
+            <div class="income-expense-form">
+                <div class="input-group">
+                    <label>Тип</label>
+                    <select id="transType">
+                        <option value="income">💰 Доход</option>
+                        <option value="expense">💸 Расход</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Сумма (₽)</label>
+                    <input type="number" id="transAmount" placeholder="Сумма">
+                </div>
+                <div class="input-group">
+                    <label>Категория</label>
+                    <input type="text" id="transCategory" placeholder="Зарплата/Еда">
+                </div>
+                <button id="addTransactionBtn"><i class="fas fa-plus"></i> Добавить</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="statsChart" width="400" height="250"></canvas>
+        </div>
+        <div id="transactionsList" class="transactions-list">
+            <div class="transaction-item">📊 Добавьте операции для статистики</div>
+        </div>
+        <button id="resetStatsBtn" style="background:#e07c4c; margin-top:10px;"><i class="fas fa-trash-alt"></i> Сбросить статистику</button>
+    </div>
+
+    <!-- Советы -->
+    <div class="tips-section">
+        <div class="tips-header">
+            <h3><i class="fas fa-lightbulb"></i> Финансовые советы</h3>
+            <button id="randomTipBtn" class="random-btn"><i class="fas fa-sync-alt"></i> Другой совет</button>
+        </div>
+        <div id="tipsContainer">
+            <div class="tip-card"><i class="fas fa-sparkle"></i> Загружаем...</div>
+        </div>
+    </div>
+    
+    <div class="footer-note">
+        <i class="fas fa-database"></i> Данные сохраняются в аккаунте. Рассрочка и ипотека — точные аннуитетные расчёты.
+        <br><i class="fas fa-palette"></i> Переключайте тему в любой момент!
+    </div>
+</div>
+
+<!-- Модалка авторизации -->
+<div id="authModal" class="modal">
+    <div class="modal-card">
+        <span class="close-modal" id="closeModalBtn">&times;</span>
+        <h3 id="modalTitle">Вход</h3>
+        <input type="text" id="authLogin" placeholder="Логин" style="width:100%; margin-bottom:12px; padding:10px; border-radius:40px;">
+        <input type="password" id="authPassword" placeholder="Пароль" style="width:100%; margin-bottom:12px; padding:10px; border-radius:40px;">
+        <button id="submitAuthBtn">Войти</button>
+        <div id="authMessage" style="color:#e07c4c; margin-top:12px; text-align:center;"></div>
+        <div class="switch-modal" id="switchAuthMode" style="text-align:center; margin-top:12px; cursor:pointer; color:#1b7e6b;">Нет аккаунта? Зарегистрироваться</div>
+    </div>
+</div>
+
+<script>
+    // ========== УПРАВЛЕНИЕ ТЕМОЙ ==========
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            updateThemeButton('dark');
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            updateThemeButton('light');
+        }
+    }
+    
+    function updateThemeButton(theme) {
+        const btn = document.getElementById('themeToggleBtn');
+        if (theme === 'dark') {
+            btn.innerHTML = '<i class="fas fa-sun"></i> Светлая тема';
+        } else {
+            btn.innerHTML = '<i class="fas fa-moon"></i> Тёмная тема';
+        }
+    }
+    
+    function toggleTheme() {
+        if (document.body.classList.contains('light-theme')) {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            localStorage.setItem('theme', 'dark');
+            updateThemeButton('dark');
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            localStorage.setItem('theme', 'light');
+            updateThemeButton('light');
+        }
+        // Обновляем график при смене темы (перерисовка)
+        if (chartInstance) {
+            renderChart();
+        }
+    }
+    
+    // ========== УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ ==========
+    let currentUser = null;
+    let statsData = { incomeTotal: 0, expenseTotal: 0, transactions: [] };
+    let chartInstance = null;
+
+    function loadUserStats() {
+        if(!currentUser) { resetStatsToDefault(); return; }
+        const key = `finance_stats_${currentUser.login}`;
+        const saved = localStorage.getItem(key);
+        if(saved) {
+            try{
+                statsData = JSON.parse(saved);
+                if(!statsData.transactions) statsData.transactions = [];
+                if(statsData.incomeTotal===undefined) statsData.incomeTotal=0;
+                if(statsData.expenseTotal===undefined) statsData.expenseTotal=0;
+            }catch(e){ resetStatsToDefault(); }
+        } else { resetStatsToDefault(); }
+        updateStatsUI();
+    }
+    
+    function resetStatsToDefault() {
+        statsData = { incomeTotal: 0, expenseTotal: 0, transactions: [] };
+        if(currentUser) saveStatsToUser();
+        updateStatsUI();
+    }
+    
+    function saveStatsToUser() {
+        if(!currentUser) return;
+        localStorage.setItem(`finance_stats_${currentUser.login}`, JSON.stringify(statsData));
+    }
+    
+    function addTransaction(type, amount, category) {
+        if(!amount || amount<=0) { alert("Введите сумму >0"); return false; }
+        const num = parseFloat(amount);
+        if(type === 'income') statsData.incomeTotal += num;
+        else statsData.expenseTotal += num;
+        statsData.transactions.unshift({ 
+            type, 
+            amount: num, 
+            category: category || (type==='income'?'Доход':'Расход'), 
+            date: new Date().toLocaleString() 
+        });
+        if(statsData.transactions.length > 20) statsData.transactions.pop();
+        saveStatsToUser();
+        updateStatsUI();
+        return true;
+    }
+    
+    function deleteTransaction(index) {
+        const tx = statsData.transactions[index];
+        if(tx.type === 'income') statsData.incomeTotal -= tx.amount;
+        else statsData.expenseTotal -= tx.amount;
+        statsData.transactions.splice(index,1);
+        saveStatsToUser();
+        updateStatsUI();
+    }
+    
+    function updateStatsUI() {
+        renderChart();
+        renderTransactionsList();
+        document.getElementById('transAmount').value = '';
+        document.getElementById('transCategory').value = '';
+    }
+    
+    function renderChart() {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        const incomeVal = statsData.incomeTotal || 0;
+        const expenseVal = statsData.expenseTotal || 0;
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: { 
+                labels: ['Доходы', 'Расходы'], 
+                datasets: [{ 
+                    label: 'Сумма (₽)', 
+                    data: [incomeVal, expenseVal], 
+                    backgroundColor: ['#1b7e6b', '#e07c4c'], 
+                    borderRadius: 12 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: true, 
+                plugins: { legend: { position: 'top' } } 
+            }
+        });
+    }
+    
+    function renderTransactionsList() {
+        const container = document.getElementById('transactionsList');
+        if(!statsData.transactions.length) { 
+            container.innerHTML = '<div class="transaction-item">📭 Нет операций. Добавьте первую!</div>'; 
+            return; 
+        }
+        container.innerHTML = statsData.transactions.map((tx, idx) => `
+            <div class="transaction-item">
+                <span><i class="fas ${tx.type==='income'?'fa-arrow-up text-success':'fa-arrow-down text-danger'}"></i> ${tx.category} : ${tx.amount.toLocaleString()} ₽ (${tx.date})</span>
+                <span class="delete-trans" data-idx="${idx}"><i class="fas fa-trash-alt"></i></span>
+            </div>
+        `).join('');
+        document.querySelectorAll('.delete-trans').forEach(el => {
+            el.addEventListener('click', (e) => { 
+                const idx = parseInt(el.dataset.idx); 
+                deleteTransaction(idx); 
+            });
+        });
+    }
+    
+    // ========== АВТОРИЗАЦИЯ ==========
+    function getUsers(){ return JSON.parse(localStorage.getItem('finance_users') || '{}'); }
+    function saveUsers(obj){ localStorage.setItem('finance_users', JSON.stringify(obj)); }
+    
+    function loadSession() {
+        const saved = localStorage.getItem('finance_current_user');
+        if(saved){ currentUser = JSON.parse(saved); updateUIBasedOnAuth(); loadUserStats(); }
+        else { currentUser = null; updateUIBasedOnAuth(); loadUserStats(); }
+    }
+    
+    function updateUIBasedOnAuth() {
+        const guestSpan = document.getElementById('userGreeting');
+        const authBtn = document.getElementById('authActionBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if(currentUser) { 
+            guestSpan.innerHTML = `<i class="fas fa-user-circle"></i> ${currentUser.login}`; 
+            authBtn.classList.add('hidden'); 
+            logoutBtn.classList.remove('hidden'); 
+        }
+        else { 
+            guestSpan.innerHTML = `<i class="fas fa-user-friends"></i> Гость`; 
+            authBtn.classList.remove('hidden'); 
+            logoutBtn.classList.add('hidden'); 
+        }
+    }
+    
+    function logout(){ 
+        currentUser = null; 
+        localStorage.removeItem('finance_current_user'); 
+        updateUIBasedOnAuth(); 
+        loadUserStats(); 
+    }
+    
+    let authMode = 'login';
+    function openAuthModal(mode){ 
+        authMode=mode; 
+        document.getElementById('modalTitle').innerText = mode==='login'?'🔐 Вход':'📝 Регистрация'; 
+        document.getElementById('submitAuthBtn').innerText = mode==='login'?'Войти':'Зарегистрироваться'; 
+        document.getElementById('switchAuthMode').innerText = mode==='login'?'Нет аккаунта? Зарегистрироваться':'Уже есть аккаунт? Войти'; 
+        document.getElementById('authModal').style.display='flex'; 
+    }
+    
+    function closeModal(){ document.getElementById('authModal').style.display='none'; }
+    
+    function handleAuth(){
+        const login = document.getElementById('authLogin').value.trim();
+        const pwd = document.getElementById('authPassword').value.trim();
+        const msgDiv = document.getElementById('authMessage');
+        if(login.length<2 || pwd.length<2){ msgDiv.innerText='Логин/пароль мин. 2 символа'; return; }
+        const users = getUsers();
+        if(authMode==='register'){
+            if(users[login]){ msgDiv.innerText='Уже существует'; return; }
+            users[login] = { password: btoa(pwd) };
+            saveUsers(users);
+            currentUser = { login };
+            localStorage.setItem('finance_current_user', JSON.stringify(currentUser));
+            updateUIBasedOnAuth();
+            loadUserStats();
+            closeModal();
+        } else {
+            if(!users[login]){ msgDiv.innerText='Нет пользователя'; return; }
+            if(users[login].password !== btoa(pwd)){ msgDiv.innerText='Неверный пароль'; return; }
+            currentUser = { login };
+            localStorage.setItem('finance_current_user', JSON.stringify(currentUser));
+            updateUIBasedOnAuth();
+            loadUserStats();
+            closeModal();
+        }
+    }
+    
+    // ========== КАЛЬКУЛЯТОРЫ ==========
+    function calcMortgage(){
+        let price = parseFloat(document.getElementById('mortgagePrice').value)||0;
+        let down = parseFloat(document.getElementById('mortgageDown').value)||0;
+        let rate = parseFloat(document.getElementById('mortgageRate').value)||0;
+        let years = parseFloat(document.getElementById('mortgageYears').value)||1;
+        if(price<=0){ document.getElementById('mortgageResult').innerHTML='❌ Введите стоимость'; return; }
+        let loanAmount = price - down;
+        if(loanAmount<=0){ document.getElementById('mortgageResult').innerHTML='✅ Первый взнос покрывает всю сумму!'; return; }
+        let months = years*12;
+        let monthlyRate = rate/100/12;
+        let payment;
+        if(monthlyRate===0) payment = loanAmount/months;
+        else payment = loanAmount * monthlyRate / (1 - Math.pow(1+monthlyRate, -months));
+        let totalPay = payment*months;
+        document.getElementById('mortgageResult').innerHTML = `🏡 Ежемес. платёж: ${payment.toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽<br>📊 Общая сумма: ${totalPay.toLocaleString('ru-RU',{maximumFractionDigits:0})} ₽, Переплата: ${(totalPay-loanAmount).toLocaleString('ru-RU',{maximumFractionDigits:0})} ₽`;
+    }
+    
+    function calcInstallment(){
+        let amount = parseFloat(document.getElementById('installAmount').value)||0;
+        let months = parseInt(document.getElementById('installMonths').value)||1;
+        let rateYear = parseFloat(document.getElementById('installRate').value)||0;
+        if(amount<=0){ document.getElementById('installResult').innerHTML='❌ Сумма покупки >0'; return; }
+        let monthlyRate = rateYear/100/12;
+        let payment;
+        if(monthlyRate===0) payment = amount/months;
+        else payment = amount * monthlyRate / (1 - Math.pow(1+monthlyRate, -months));
+        let total = payment*months;
+        document.getElementById('installResult').innerHTML = `📦 Ежемесячный платёж: ${payment.toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽<br>💸 Общая сумма: ${total.toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽, переплата: ${(total-amount).toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽`;
+    }
+    
+    function updateBudget(){ 
+        let inc=parseFloat(document.getElementById('income').value)||0; 
+        let exp=parseFloat(document.getElementById('expenses').value)||0; 
+        let bal=inc-exp; 
+        document.getElementById('budgetResult').innerHTML = bal>=0?`✅ Остаток: ${bal.toLocaleString()} ₽`:`⚠️ Дефицит: ${Math.abs(bal).toLocaleString()} ₽`; 
+    }
+    
+    function calcLoan(){ 
+        let amt=parseFloat(document.getElementById('loanAmount').value)||0; 
+        let r=parseFloat(document.getElementById('loanRate').value)||0; 
+        let m=parseInt(document.getElementById('loanTerm').value)||1; 
+        let mr=r/100/12; 
+        let pay=mr===0?amt/m:amt*mr/(1-Math.pow(1+mr,-m)); 
+        let total=pay*m; 
+        document.getElementById('loanResult').innerHTML=`💸 Платёж: ${pay.toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽<br>Переплата: ${(total-amt).toLocaleString('ru-RU',{maximumFractionDigits:0})} ₽`; 
+    }
+    
+    function calcInvestment(){ 
+        let p=parseFloat(document.getElementById('investPrincipal').value)||0; 
+        let m=parseFloat(document.getElementById('monthlyAdd').value)||0; 
+        let r=parseFloat(document.getElementById('yearReturn').value)||0; 
+        let y=parseFloat(document.getElementById('yearsInvest').value)||0; 
+        let months=y*12; 
+        let mr=r/100/12; 
+        let f=mr===0?p+m*months:p*Math.pow(1+mr,months)+m*(Math.pow(1+mr,months)-1)/mr; 
+        let inv=p+m*months; 
+        document.getElementById('investResult').innerHTML=`📈 Итог: ${f.toLocaleString('ru-RU',{maximumFractionDigits:0})} ₽, доход: ${(f-inv).toLocaleString('ru-RU',{maximumFractionDigits:0})} ₽`; 
+    }
+    
+    function calcGoal(){ 
+        let g=parseFloat(document.getElementById('goalAmount').value)||0; 
+        let m=parseInt(document.getElementById('goalMonths').value)||1; 
+        let cur=parseFloat(document.getElementById('currentSavings').value)||0; 
+        if(cur>=g){ document.getElementById('goalResult').innerHTML='🎉 Цель достигнута!'; return; } 
+        let need=(g-cur)/m; 
+        document.getElementById('goalResult').innerHTML=`🎯 Нужно откладывать: ${need.toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽/мес`; 
+    }
+    
+    const tips = [
+        "📘 50/30/20: 50% нужды, 30% желания, 20% сбережения",
+        "🏦 Подушка безопасности: 3-6 месяцев",
+        "📉 Сложный процент — сила инвестора",
+        "💳 Отслеживайте мелкие траты",
+        "🏠 Ипотека: первый взнос >20% снижает ставку",
+        "📦 Рассрочка 0% выгоднее кредита, если нет скрытых комиссий",
+        "🔄 Рефинансируйте кредиты",
+        "📈 Диверсификация портфеля снижает риски",
+        "💰 Платите себе сначала",
+        "🎓 Инвестируйте в знания"
+    ];
+    
+    function randomTip(){ 
+        let idx=Math.floor(Math.random()*tips.length); 
+        document.getElementById('tipsContainer').innerHTML=`<div class="tip-card"><i class="fas fa-lightbulb"></i> ${tips[idx]}</div>`; 
+    }
+    
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
+    window.onload = () => {
+        initTheme();
+        document.getElementById('themeToggleBtn').onclick = toggleTheme;
+        loadSession();
+        
+        document.getElementById('calcBudgetBtn').onclick=updateBudget;
+        document.getElementById('calcLoanBtn').onclick=calcLoan;
+        document.getElementById('calcInvestBtn').onclick=calcInvestment;
+        document.getElementById('calcGoalBtn').onclick=calcGoal;
+        document.getElementById('calcMortgageBtn').onclick=calcMortgage;
+        document.getElementById('calcInstallBtn').onclick=calcInstallment;
+        
+        document.getElementById('addTransactionBtn').onclick=()=>{ 
+            let type=document.getElementById('transType').value; 
+            let amt=parseFloat(document.getElementById('transAmount').value); 
+            let cat=document.getElementById('transCategory').value||(type==='income'?'Доход':'Покупка'); 
+            if(amt>0) addTransaction(type,amt,cat); 
+            else alert('Введите сумму'); 
+        };
+        
+        document.getElementById('resetStatsBtn').onclick=()=>{ 
+            if(confirm('Сбросить всю статистику?')){ resetStatsToDefault(); } 
+        };
+        
+        document.getElementById('randomTipBtn').onclick=randomTip;
+        randomTip();
+        updateBudget(); 
+        calcLoan(); 
+        calcInvestment(); 
+        calcGoal(); 
+        calcMortgage(); 
+        calcInstallment();
+        
+        const modal=document.getElementById('authModal');
+        document.getElementById('authActionBtn').onclick=()=>openAuthModal('login');
+        document.getElementById('logoutBtn').onclick=logout;
+        document.getElementById('closeModalBtn').onclick=closeModal;
+        document.getElementById('submitAuthBtn').onclick=handleAuth;
+        document.getElementById('switchAuthMode').onclick=()=>{ 
+            let newMode = authMode==='login'?'register':'login'; 
+            openAuthModal(newMode); 
+        };
+        window.onclick=(e)=>{ if(e.target===modal) closeModal(); };
+    };
+</script>
+</body>
+</html>
+```
